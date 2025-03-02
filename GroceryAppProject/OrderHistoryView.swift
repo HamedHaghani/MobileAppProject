@@ -7,7 +7,10 @@
 
 import SwiftUI
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7ab7072 (images fix and updated)
 struct OrderHistoryView: View {
     
     @EnvironmentObject var orderManager: OrderManager
@@ -28,8 +31,12 @@ struct OrderHistoryView: View {
                         Section(header: Text("Order #\(orderIndex + 1)").font(.headline)) {
                             ForEach(orderManager.orders[orderIndex], id: \.name) { item in
                                 HStack {
+<<<<<<< HEAD
                                     Image(systemName: item.imageName)
                                         .resizable()
+=======
+                                    CustomImage(imageName: item.imageName)
+>>>>>>> 7ab7072 (images fix and updated)
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 40, height: 40)
 

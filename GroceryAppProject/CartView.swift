@@ -28,8 +28,13 @@ struct CartView: View {
                     List {
                         ForEach(cartManager.cartItems.indices, id: \.self) { index in
                             HStack(spacing: 15) {
+<<<<<<< HEAD
                                 Image(systemName: cartManager.cartItems[index].imageName)
                                     .resizable()
+=======
+                                // Use CustomImage to display product image.
+                                CustomImage(imageName: cartManager.cartItems[index].imageName)
+>>>>>>> 7ab7072 (images fix and updated)
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 40, height: 40)
 

@@ -6,6 +6,10 @@
 //
 //  Updated by Mehmet Ali KABA
 //
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7ab7072 (images fix and updated)
 import SwiftUI
 
 struct ProductDetailView: View {
@@ -18,8 +22,13 @@ struct ProductDetailView: View {
 
     var body: some View {
         VStack(spacing: 20) {
+<<<<<<< HEAD
             Image(systemName: imageName)
                 .resizable()
+=======
+            // Use CustomImage to display asset if exists.
+            CustomImage(imageName: imageName)
+>>>>>>> 7ab7072 (images fix and updated)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100)
                 .padding()
@@ -38,7 +47,10 @@ struct ProductDetailView: View {
                 .padding()
                 .multilineTextAlignment(.center)
             
+<<<<<<< HEAD
        
+=======
+>>>>>>> 7ab7072 (images fix and updated)
             HStack {
                 Text("Quantity: \(quantity)")
                     .font(.headline)

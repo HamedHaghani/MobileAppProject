@@ -26,6 +26,7 @@ struct HomeView: View {
     
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
+<<<<<<< HEAD
     let featuredProducts = [
         ("Apple", "$1.00", "applelogo"),
         ("Banana", "$0.50", "cart"),
@@ -35,6 +36,18 @@ struct HomeView: View {
         ("Cheese", "$5.00", "cart"),
         ("Chicken", "$8.00", "cart"),
         ("Fish", "$10.00", "cart")
+=======
+    // Updated featuredProducts array using asset names for items.
+    let featuredProducts = [
+        ("Apple", "$1.00", "Apple"),
+        ("Banana", "$0.50", "Banana"),
+        ("Milk", "$3.00", "Milk"),
+        ("Bread", "$2.50", "Bread"),
+        ("Eggs", "$2.00", "Eggs"),
+        ("Cheese", "$5.00", "Cheese"),
+        ("Chicken", "$8.00", "Chicken"),
+        ("Fish", "$10.00", "Fish")
+>>>>>>> 7ab7072 (images fix and updated)
     ]
     
     var body: some View {
@@ -127,8 +140,13 @@ struct HomeView: View {
         
         var body: some View {
             VStack(spacing: 10) {
+<<<<<<< HEAD
                 Image(systemName: imageName)
                     .resizable()
+=======
+                // Use CustomImage for asset image display.
+                CustomImage(imageName: imageName)
+>>>>>>> 7ab7072 (images fix and updated)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 50, height: 50)
                     .padding(10)

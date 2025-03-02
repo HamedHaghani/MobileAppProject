@@ -4,13 +4,20 @@
 //
 //  Created by HAMED HAGHANI on 2025-03-02.
 //
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7ab7072 (images fix and updated)
 import SwiftUI
 
 struct CheckoutView: View {
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var orderManager: OrderManager
 
+<<<<<<< HEAD
   
+=======
+>>>>>>> 7ab7072 (images fix and updated)
     var totalPrice: Double {
         cartManager.cartItems.reduce(0) { sum, item in
             let unitPrice = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0
@@ -34,8 +41,12 @@ struct CheckoutView: View {
                 List {
                     ForEach(cartManager.cartItems.indices, id: \.self) { index in
                         HStack {
+<<<<<<< HEAD
                             Image(systemName: cartManager.cartItems[index].imageName)
                                 .resizable()
+=======
+                            CustomImage(imageName: cartManager.cartItems[index].imageName)
+>>>>>>> 7ab7072 (images fix and updated)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 40)
 
