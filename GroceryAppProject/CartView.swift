@@ -4,6 +4,7 @@
 //
 //  Created by HAMED HAGHANI on 2025-02-28.
 //
+// Updated by Mehmet Ali KABA
 
 import SwiftUI
 
@@ -11,30 +12,36 @@ struct CartView: View {
     @EnvironmentObject var cartManager: CartManager
 
     var body: some View {
-        NavigationView { 
+        NavigationView {
             VStack {
-                Text("Shopping Cart")
+                Text("Your Shopping Cart")
                     .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .fontWeight(.semibold)
                     .padding()
 
                 if cartManager.cartItems.isEmpty {
-                    Text("Your cart is empty.")
+                    Text("Your cart is empty. Start adding some tasty items!")
                         .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding()
                 } else {
                     List {
                         ForEach(cartManager.cartItems.indices, id: \.self) { index in
-                            HStack {
+                            HStack(spacing: 15) {
                                 Image(systemName: cartManager.cartItems[index].imageName)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 40, height: 40)
 
-                                VStack(alignment: .leading) {
+                                VStack(alignment: .leading, spacing: 4) {
                                     Text(cartManager.cartItems[index].name)
                                         .font(.headline)
                                     Text(cartManager.cartItems[index].price)
                                         .foregroundColor(.gray)
+                                        .font(.subheadline)
+                                    Text("Quantity: \(cartManager.cartItems[index].quantity)")
+                                        .foregroundColor(.gray)
+                                        .font(.subheadline)
                                 }
 
                                 Spacer()
@@ -46,10 +53,11 @@ struct CartView: View {
                                         .foregroundColor(.red)
                                 }
                             }
+                            .padding(.vertical, 8)
                         }
                     }
+                    .listStyle(PlainListStyle())
 
-                   
                     NavigationLink(destination: CheckoutView()) {
                         Text("Proceed to Checkout")
                             .font(.headline)
@@ -71,4 +79,3 @@ struct CartView: View {
         }
     }
 }
-

@@ -6,15 +6,14 @@
 //
 
 import SwiftUI
-
 @main
 struct GroceryAppProjectApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                SplashScreenView() 
+                AuthView()
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }
-

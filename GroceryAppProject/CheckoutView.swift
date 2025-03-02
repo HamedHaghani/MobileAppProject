@@ -4,17 +4,17 @@
 //
 //  Created by HAMED HAGHANI on 2025-03-02.
 //
-
 import SwiftUI
 
 struct CheckoutView: View {
-    
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var orderManager: OrderManager
-    
+
+  
     var totalPrice: Double {
         cartManager.cartItems.reduce(0) { sum, item in
-            sum + (Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0)
+            let unitPrice = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0
+            return sum + (unitPrice * Double(item.quantity))
         }
     }
 
@@ -44,6 +44,8 @@ struct CheckoutView: View {
                                     .font(.headline)
                                 Text(cartManager.cartItems[index].price)
                                     .foregroundColor(.gray)
+                                Text("Qty: \(cartManager.cartItems[index].quantity)")
+                                    .foregroundColor(.gray)
                             }
 
                             Spacer()
@@ -60,11 +62,9 @@ struct CheckoutView: View {
             Spacer()
 
             Button(action: {
-        
                 orderManager.placeOrder(cartItems: cartManager.cartItems)
                 orderPlaced = true
                 cartManager.cartItems.removeAll()
-                
             }) {
                 Text("Place Order")
                     .font(.headline)
@@ -78,7 +78,7 @@ struct CheckoutView: View {
             .disabled(cartManager.cartItems.isEmpty)
 
             if orderPlaced {
-                Text(" Order placed successfully!")
+                Text("Order placed successfully!")
                     .foregroundColor(.green)
                     .padding()
                     .transition(.opacity)
@@ -88,4 +88,3 @@ struct CheckoutView: View {
         .animation(.easeInOut, value: orderPlaced)
     }
 }
-

@@ -15,33 +15,52 @@ struct SignUpView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 30) {
             Text("Sign Up")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-
-            TextField("Email", text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            SecureField("Password", text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            SecureField("Confirm Password", text: $confirmPassword)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
+                .font(.system(size: 36, weight: .bold))
+                .padding(.bottom, 20)
+            
+            VStack(spacing: 20) {
+                TextField("Email", text: $email)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .font(.system(size: 18))
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .contentShape(Rectangle())
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                
+                SecureField("Password", text: $password)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .font(.system(size: 18))
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .contentShape(Rectangle())
+                
+                SecureField("Confirm Password", text: $confirmPassword)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .font(.system(size: 18))
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .contentShape(Rectangle())
+            }
+            .padding(.horizontal, 20)
+            
             if let successMessage = successMessage {
                 Text(successMessage)
                     .foregroundColor(.green)
+                    .padding(.horizontal, 20)
             }
-
+            
             if let errorMessage = errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
+                    .padding(.horizontal, 20)
             }
-
+            
             Button(action: {
                 if password == confirmPassword && !email.isEmpty {
                     successMessage = "Account created successfully!"
@@ -57,10 +76,11 @@ struct SignUpView: View {
                     .background(Color.green)
                     .cornerRadius(10)
             }
-            .padding(.horizontal)
-
+            .padding(.horizontal, 20)
+            
             Spacer()
         }
-        .padding()
+        .padding(.top, 40)
+        .background(Color.white.edgesIgnoringSafeArea(.all))
     }
 }

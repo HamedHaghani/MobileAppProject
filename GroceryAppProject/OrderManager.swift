@@ -7,9 +7,10 @@
 import SwiftUI
 
 class OrderManager: ObservableObject {
-    @Published var orders: [[(name: String, price: String, imageName: String)]] = []
+   
+    @Published var orders: [[(name: String, price: String, imageName: String, quantity: Int)]] = []
 
-    func placeOrder(cartItems: [(name: String, price: String, imageName: String)]) {
+    func placeOrder(cartItems: [(name: String, price: String, imageName: String, quantity: Int)]) {
         if !cartItems.isEmpty {
             orders.append(cartItems)
         }

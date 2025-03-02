@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct OrderHistoryView: View {
     
     @EnvironmentObject var orderManager: OrderManager
@@ -37,6 +38,9 @@ struct OrderHistoryView: View {
                                             .font(.headline)
                                         Text(item.price)
                                             .foregroundColor(.gray)
+                                        Text("Quantity: \(item.quantity)")
+                                            .foregroundColor(.gray)
+                                            .font(.subheadline)
                                     }
                                 }
                             }
