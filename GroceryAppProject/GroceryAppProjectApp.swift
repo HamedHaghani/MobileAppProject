@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+
 @main
 struct GroceryAppProjectApp: App {
+    let persistenceController = PersistenceController.shared
+
     var body: some Scene {
         WindowGroup {
             NavigationView {
                 AuthView()
             }
+            .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .navigationViewStyle(StackNavigationViewStyle())
         }
     }

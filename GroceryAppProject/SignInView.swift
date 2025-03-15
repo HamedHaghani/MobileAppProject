@@ -3,7 +3,6 @@
 //  GroceryAppProject
 //
 //  Created by HAMED HAGHANI on 2025-03-02.
-//
 //  Updated by Mehmet Ali KABA
 //
 
@@ -11,9 +10,12 @@ import SwiftUI
 
 struct SignInView: View {
     @Binding var isUserLoggedIn: Bool
-    @State private var email = "test@example.com" // Default email
-    @State private var password = "password123" // Default password
+    @State private var email = ""
+    @State private var password = ""
     @State private var errorMessage: String?
+    
+    // Store the logged-in user
+    @State private var loggedInUser: User?
 
     var body: some View {
         VStack(spacing: 30) {
@@ -22,7 +24,6 @@ struct SignInView: View {
                 .padding(.bottom, 20)
             
             VStack(spacing: 20) {
-                // Email Input
                 TextField("Email", text: $email)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -31,8 +32,7 @@ struct SignInView: View {
                     .cornerRadius(10)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                
-                // Password Input
+
                 SecureField("Password", text: $password)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -42,14 +42,12 @@ struct SignInView: View {
             }
             .padding(.horizontal, 20)
             
-            Button(action: {
-                if email == "test@example.com" && password == "password123" {
-                    isUserLoggedIn = true // Simulate login success
-                    errorMessage = nil
-                } else {
-                    errorMessage = "Invalid email or password"
-                }
-            }) {
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+            }
+
+            Button(action: handleSignIn) {
                 Text("Log In")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -60,15 +58,18 @@ struct SignInView: View {
             }
             .padding(.horizontal, 20)
             
-            Text(errorMessage ?? " ")
-                .font(.subheadline)
-                .foregroundColor(.red)
-                .padding(.horizontal, 20)
-                .frame(height: 20, alignment: .center)
-            
             Spacer()
         }
         .padding(.top, 40)
-        .background(Color.white.edgesIgnoringSafeArea(.all))
+    }
+    
+    private func handleSignIn() {
+        if let user = CoreDataManager.shared.fetchUser(email: email, password: password) {
+            loggedInUser = user  // ✅ Store the logged-in user
+            isUserLoggedIn = true
+            errorMessage = nil
+        } else {
+            errorMessage = "Invalid email or password"
+        }
     }
 }
