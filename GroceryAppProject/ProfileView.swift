@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @State private var userName: String = "John Doe"
-    @State private var email: String = "johndoe@example.com"
+    // Pull the userSession from the environment
+    @EnvironmentObject var userSession: UserSession
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                // Use the currentUser’s info if available
+                let userName = userSession.currentUser?.fullname ?? "Unknown User"
+                let userEmail = userSession.currentUser?.email ?? "Unknown Email"
+                
                 // Profile Picture
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
@@ -27,7 +31,7 @@ struct ProfileView: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text(email)
+                Text(userEmail)
                     .font(.subheadline)
                     .foregroundColor(.gray)
 
@@ -51,7 +55,8 @@ struct ProfileView: View {
                         }
                     }
                     Button(action: {
-                        // Future Logout Action
+                        // Logout action
+                        userSession.logOut()
                     }) {
                         HStack {
                             Image(systemName: "arrow.left.circle.fill")
@@ -69,4 +74,3 @@ struct ProfileView: View {
         }
     }
 }
-

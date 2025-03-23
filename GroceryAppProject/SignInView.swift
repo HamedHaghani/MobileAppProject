@@ -9,13 +9,12 @@
 import SwiftUI
 
 struct SignInView: View {
-    @Binding var isUserLoggedIn: Bool
+    // Pull the userSession from environment
+    @EnvironmentObject var userSession: UserSession
+    
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage: String?
-    
-    // Store the logged-in user
-    @State private var loggedInUser: User?
 
     var body: some View {
         VStack(spacing: 30) {
@@ -65,8 +64,7 @@ struct SignInView: View {
     
     private func handleSignIn() {
         if let user = CoreDataManager.shared.fetchUser(email: email, password: password) {
-            loggedInUser = user  // ✅ Store the logged-in user
-            isUserLoggedIn = true
+            userSession.logIn(user: user)
             errorMessage = nil
         } else {
             errorMessage = "Invalid email or password"

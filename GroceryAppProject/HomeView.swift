@@ -1,17 +1,19 @@
 //
-//  GroceryAppProjectApp.swift
+//  HomeView.swift
 //  GroceryAppProject
 //
 //  Created by HAMED HAGHANI on 2025-02-28.
+//  Updated by Mehmet Ali KABA
 //
-
-
 
 import SwiftUI
 
 struct HomeView: View {
     
     @EnvironmentObject var cartManager: CartManager
+    
+    // State used to present the AddCategoryOrItemView sheet
+    @State private var showingAddView = false
     
     let categories = [
         ("Fruits", "applelogo"),
@@ -70,8 +72,12 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(featuredProducts, id: \.0) { product in
-                                NavigationLink(destination: ProductDetailView(name: product.0, price: product.1, imageName: product.2)) {
-                                    FeaturedProductCard(name: product.0, price: product.1, imageName: product.2)
+                                NavigationLink(destination: ProductDetailView(name: product.0,
+                                                                            price: product.1,
+                                                                            imageName: product.2)) {
+                                    FeaturedProductCard(name: product.0,
+                                                        price: product.1,
+                                                        imageName: product.2)
                                 }
                             }
                         }
@@ -83,97 +89,117 @@ struct HomeView: View {
                     Spacer()
                 }
             }
+            // Use an inline navigation title so the button appears on the same line.
             .navigationTitle("Grocery Store")
-        }
-    }
-    
-    // Category Card
-    struct CategoryView: View {
-        var name: String
-        var imageName: String
-        
-        var body: some View {
-            NavigationLink(destination: ProductListView(categoryName: name)) {
-                VStack(spacing: 2) {
-                    Image(systemName: imageName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
-                        .foregroundColor(.blue.opacity(0.6))
-                        .padding(15)
-                        .background(Circle().fill(Color.blue.opacity(0.1)))
-                        .shadow(radius: 3)
-                    
-                    Text(name)
-                        .fontWeight(.medium)
-                        .padding(.top, 5)
-                        .foregroundColor(.black)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                // “+” button on the same line as the navigation title
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingAddView = true
+                    }) {
+                        Image(systemName: "plus")
+                    }
                 }
-                .frame(maxWidth: .infinity, minHeight: 110)
-                .background(Color.white)
-                .cornerRadius(10)
-                .shadow(radius: 3)
-                .padding(5)
+            }
+            // Present the AddCategoryOrItemView as a sheet
+            .sheet(isPresented: $showingAddView) {
+                AddCategoryOrItemView()
             }
         }
     }
+}
+
+// MARK: - CategoryView
+struct CategoryView: View {
+    var name: String
+    var imageName: String
     
-    struct FeaturedProductCard: View {
-        var name: String
-        var price: String
-        var imageName: String
-        
-        @EnvironmentObject var cartManager: CartManager
-        @State private var quantity: Int = 1
-        
-        var body: some View {
-            VStack(spacing: 10) {
-                // Use CustomImage for asset image display.
-                CustomImage(imageName: imageName)
+    var body: some View {
+        NavigationLink(destination: ProductListView(categoryName: name)) {
+            VStack(spacing: 2) {
+                Image(systemName: imageName)
+                    .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
-                    .padding(10)
-                    .background(Circle().fill(Color.purple.opacity(0.1)))
+                    .frame(width: 40, height: 40)
+                    .foregroundColor(.blue.opacity(0.6))
+                    .padding(15)
+                    .background(Circle().fill(Color.blue.opacity(0.1)))
                     .shadow(radius: 3)
                 
                 Text(name)
-                    .font(.headline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .fontWeight(.medium)
                     .padding(.top, 5)
-                
-                Text(price)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                VStack(spacing: 5) {
-                    Text("Qty: \(quantity)")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                    Stepper("", value: $quantity, in: 1...100)
-                        .labelsHidden()
-                }
-                .padding(.top, 5)
-                
-                Button(action: {
-                    cartManager.addToCart(name: name, price: price, imageName: imageName, quantity: quantity)
-                    quantity = 1 // Reset after adding to cart
-                }) {
-                    Text("Add to Cart")
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-                .padding(.top, 5)
+                    .foregroundColor(.black)
             }
-            .padding()
-            .frame(width: 140)
+            .frame(maxWidth: .infinity, minHeight: 110)
             .background(Color.white)
             .cornerRadius(10)
             .shadow(radius: 3)
+            .padding(5)
         }
+    }
+}
+
+// MARK: - FeaturedProductCard
+struct FeaturedProductCard: View {
+    var name: String
+    var price: String
+    var imageName: String
+    
+    @EnvironmentObject var cartManager: CartManager
+    @State private var quantity: Int = 1
+    
+    var body: some View {
+        VStack(spacing: 10) {
+            // Use CustomImage for asset image display, or Image(imageName) if you prefer
+            CustomImage(imageName: imageName)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 50, height: 50)
+                .padding(10)
+                .background(Circle().fill(Color.purple.opacity(0.1)))
+                .shadow(radius: 3)
+            
+            Text(name)
+                .font(.headline)
+                .fontWeight(.bold)
+                .foregroundColor(.black)
+                .padding(.top, 5)
+            
+            Text(price)
+                .font(.subheadline)
+                .foregroundColor(.gray)
+            
+            VStack(spacing: 5) {
+                Text("Qty: \(quantity)")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Stepper("", value: $quantity, in: 1...100)
+                    .labelsHidden()
+            }
+            .padding(.top, 5)
+            
+            Button(action: {
+                cartManager.addToCart(name: name,
+                                      price: price,
+                                      imageName: imageName,
+                                      quantity: quantity)
+                quantity = 1 // Reset after adding to cart
+            }) {
+                Text("Add to Cart")
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(8)
+            }
+            .padding(.top, 5)
+        }
+        .padding()
+        .frame(width: 140)
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(radius: 3)
     }
 }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @EnvironmentObject var userSession: UserSession
+    
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -83,12 +85,20 @@ struct SignUpView: View {
     }
     
     private func handleSignUp() {
-        guard !email.isEmpty, !password.isEmpty, password == confirmPassword else {
+        guard !email.isEmpty,
+              !password.isEmpty,
+              password == confirmPassword else {
             errorMessage = "Passwords do not match or fields are empty."
             return
         }
         
         CoreDataManager.shared.addUser(email: email, password: password, fullName: fullName)
+        
+        // (Optional) Automatically log in the newly registered user
+        if let newUser = CoreDataManager.shared.fetchUser(email: email, password: password) {
+            userSession.logIn(user: newUser)
+        }
+        
         successMessage = "Account created successfully!"
         errorMessage = nil
     }

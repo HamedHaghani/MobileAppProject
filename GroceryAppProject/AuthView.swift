@@ -4,16 +4,25 @@
 //
 //  Created by HAMED HAGHANI on 2025-03-02.
 //
+//
+//  AuthView.swift
+//  GroceryAppProject
+//
+//  Created by HAMED HAGHANI on 2025-03-02.
+//
 
 import SwiftUI
 
 struct AuthView: View {
-    @State private var isUserLoggedIn = false 
+    // Use the environment object
+    @EnvironmentObject var userSession: UserSession
 
     var body: some View {
-        if isUserLoggedIn {
+        if userSession.isUserLoggedIn {
+            // If user is logged in, show main content
             ContentView()
         } else {
+            // Otherwise show the welcome + sign in/up interface
             VStack(spacing: 30) {
                 Text("Welcome to GroceryApp")
                     .font(.largeTitle)
@@ -25,7 +34,7 @@ struct AuthView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.blue)
 
-                NavigationLink(destination: SignInView(isUserLoggedIn: $isUserLoggedIn)) {
+                NavigationLink(destination: SignInView()) {
                     Text("Sign In")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -43,7 +52,10 @@ struct AuthView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .background(Color.white)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 2))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.blue, lineWidth: 2)
+                        )
                 }
                 .padding(.horizontal)
 

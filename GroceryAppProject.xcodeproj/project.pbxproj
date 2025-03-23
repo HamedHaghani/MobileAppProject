@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C6FB8982D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0C6FB8962D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodeld */; };
+		61456F742D87BE86006EF657 /* GroceryAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 61456F722D87BE86006EF657 /* GroceryAppModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +31,15 @@
 		0C330D592D72172B003FCDCD /* GroceryAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceryAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C330D692D72172E003FCDCD /* GroceryAppProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroceryAppProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C330D732D72172E003FCDCD /* GroceryAppProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroceryAppProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0C6FB8972D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "GroceryAppModel.xcdatamodeld .xcdatamodel"; sourceTree = "<group>"; };
+		61456F732D87BE86006EF657 /* GroceryAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GroceryAppModel.xcdatamodel; sourceTree = "<group>"; };
+		61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		61456F772D87BE93006EF657 /* OrderHistory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderHistory+CoreDataClass.swift"; sourceTree = "<group>"; };
+		61456F782D87BE93006EF657 /* OrderHistory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderHistory+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		61456F792D87BE93006EF657 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
+		61456F7A2D87BE93006EF657 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		61456F7B2D87BE93006EF657 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		61456F7C2D87BE93006EF657 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -109,7 +117,15 @@
 		0C330D502D72172B003FCDCD = {
 			isa = PBXGroup;
 			children = (
-				0C6FB8962D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodeld */,
+				61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */,
+				61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */,
+				61456F772D87BE93006EF657 /* OrderHistory+CoreDataClass.swift */,
+				61456F782D87BE93006EF657 /* OrderHistory+CoreDataProperties.swift */,
+				61456F792D87BE93006EF657 /* Product+CoreDataClass.swift */,
+				61456F7A2D87BE93006EF657 /* Product+CoreDataProperties.swift */,
+				61456F7B2D87BE93006EF657 /* User+CoreDataClass.swift */,
+				61456F7C2D87BE93006EF657 /* User+CoreDataProperties.swift */,
+				61456F722D87BE86006EF657 /* GroceryAppModel.xcdatamodeld */,
 				0C330D5B2D72172B003FCDCD /* GroceryAppProject */,
 				0C330D6C2D72172E003FCDCD /* GroceryAppProjectTests */,
 				0C330D762D72172E003FCDCD /* GroceryAppProjectUITests */,
@@ -271,7 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C6FB8982D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodeld in Sources */,
+				61456F742D87BE86006EF657 /* GroceryAppModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -600,13 +616,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		0C6FB8962D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodeld */ = {
+		61456F722D87BE86006EF657 /* GroceryAppModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				0C6FB8972D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodel */,
+				61456F732D87BE86006EF657 /* GroceryAppModel.xcdatamodel */,
 			);
-			currentVersion = 0C6FB8972D84B59F006B0620 /* GroceryAppModel.xcdatamodeld .xcdatamodel */;
-			path = "GroceryAppModel.xcdatamodeld .xcdatamodeld";
+			currentVersion = 61456F732D87BE86006EF657 /* GroceryAppModel.xcdatamodel */;
+			path = GroceryAppModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
