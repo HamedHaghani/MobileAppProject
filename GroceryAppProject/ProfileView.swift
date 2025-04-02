@@ -1,76 +1,65 @@
-//
-//  ProfileView.swift
-//  GroceryAppProject
-//
-//  Created by HAMED HAGHANI on 2025-02-28.
-//
-
 import SwiftUI
 
 struct ProfileView: View {
-    // Pull the userSession from the environment
     @EnvironmentObject var userSession: UserSession
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                // Use the currentUser’s info if available
-                let userName = userSession.currentUser?.fullname ?? "Unknown User"
-                let userEmail = userSession.currentUser?.email ?? "Unknown Email"
-                
-                // Profile Picture
-                Image(systemName: "person.crop.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.blue)
-                    .padding(.top, 30)
+        VStack(spacing: 20) {
+            let userName = userSession.currentUser?.fullname ?? "Unknown User"
+            let userEmail = userSession.currentUser?.email ?? "Unknown Email"
 
-                // User Info
-                Text(userName)
-                    .font(.title2)
-                    .fontWeight(.bold)
+            Image(systemName: "person.crop.circle.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 100, height: 100)
+                .foregroundColor(.blue)
+                .padding(.top, 30)
 
-                Text(userEmail)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+            Text(userName)
+                .font(.title2)
+                .fontWeight(.bold)
 
-                Divider()
-                    .padding(.horizontal, 40)
+            Text(userEmail)
+                .font(.subheadline)
+                .foregroundColor(.gray)
 
-                // Settings & Options
-                List {
-                    NavigationLink(destination: Text("Account Settings")) {
+            Divider()
+                .padding(.horizontal, 40)
+
+            List {
+                if let currentUser = userSession.currentUser {
+                    NavigationLink(destination: AccountSettingsView(user: currentUser)) {
                         HStack {
                             Image(systemName: "gearshape.fill")
                                 .foregroundColor(.blue)
                             Text("Account Settings")
                         }
                     }
-                    NavigationLink(destination: Text("Order History")) {
-                        HStack {
-                            Image(systemName: "list.bullet.rectangle")
-                                .foregroundColor(.blue)
-                            Text("Order History")
-                        }
-                    }
-                    Button(action: {
-                        // Logout action
-                        userSession.logOut()
-                    }) {
-                        HStack {
-                            Image(systemName: "arrow.left.circle.fill")
-                                .foregroundColor(.red)
-                            Text("Logout")
-                                .foregroundColor(.red)
-                        }
+                }
+
+                NavigationLink(destination: FavoritesView()) {
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(.pink)
+                        Text("Favorites & Wishlist")
                     }
                 }
-                .listStyle(InsetGroupedListStyle())
 
-                Spacer()
+                Button(action: {
+                    userSession.logOut()
+                }) {
+                    HStack {
+                        Image(systemName: "arrow.left.circle.fill")
+                            .foregroundColor(.red)
+                        Text("Logout")
+                            .foregroundColor(.red)
+                    }
+                }
             }
-            .navigationTitle("Profile")
+            .listStyle(InsetGroupedListStyle())
+
+            Spacer()
         }
+        .navigationTitle("Profile") 
     }
 }

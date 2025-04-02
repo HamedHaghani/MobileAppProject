@@ -1,11 +1,3 @@
-//
-//  GroceryAppProjectApp.swift
-//  GroceryAppProject
-//
-//  Created by HAMED HAGHANI on 2025-02-28.
-//
-// Updated by Mehmet Ali KABA
-
 import SwiftUI
 
 struct ContentView: View {
@@ -20,31 +12,33 @@ struct ContentView: View {
                         Image(systemName: "house.fill")
                         Text("Home")
                     }
-                
+
                 CartView()
                     .tabItem {
                         Image(systemName: "cart.fill")
                         Text("Cart")
                     }
-                
+
                 OrderHistoryView()
                     .tabItem {
                         Image(systemName: "list.bullet.rectangle")
                         Text("Orders")
                     }
-                
-                ProfileView()
-                    .tabItem {
-                        Image(systemName: "person.fill")
-                        Text("Profile")
-                    }
+
+                NavigationStack {
+                    ProfileView()
+                }
+                .tabItem {
+                    Image(systemName: "person.fill")
+                    Text("Profile")
+                }
             }
-            
+
             if let message = cartManager.notificationMessage {
                 VStack {
                     Spacer()
                     Text(message)
-                        .font(.caption) 
+                        .font(.caption)
                         .padding(8)
                         .background(Color.black.opacity(0.6))
                         .foregroundColor(.white)
@@ -55,7 +49,6 @@ struct ContentView: View {
                 .transition(.opacity)
                 .animation(.easeInOut, value: cartManager.notificationMessage)
             }
-
         }
         .environmentObject(cartManager)
         .environmentObject(orderManager)

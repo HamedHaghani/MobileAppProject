@@ -34,7 +34,6 @@
 		61456F732D87BE86006EF657 /* GroceryAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GroceryAppModel.xcdatamodel; sourceTree = "<group>"; };
 		61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		61456F772D87BE93006EF657 /* OrderHistory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderHistory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		61456F782D87BE93006EF657 /* OrderHistory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderHistory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		61456F792D87BE93006EF657 /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
 		61456F7A2D87BE93006EF657 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -119,7 +118,6 @@
 			children = (
 				61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */,
 				61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */,
-				61456F772D87BE93006EF657 /* OrderHistory+CoreDataClass.swift */,
 				61456F782D87BE93006EF657 /* OrderHistory+CoreDataProperties.swift */,
 				61456F792D87BE93006EF657 /* Product+CoreDataClass.swift */,
 				61456F7A2D87BE93006EF657 /* Product+CoreDataProperties.swift */,
