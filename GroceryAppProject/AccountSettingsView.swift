@@ -5,12 +5,12 @@
 //  Created by HAMED HAGHANI on 2025-04-01.
 //
 
-
 import SwiftUI
 
 struct AccountSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var userSession: UserSession
 
     @State private var fullName: String
     @State private var password: String = ""
@@ -49,6 +49,7 @@ struct AccountSettingsView: View {
             }
 
             Button(action: {
+                userSession.logOut() 
                 isLoggingOut = true
             }) {
                 Text("Log Out")
