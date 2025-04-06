@@ -4,12 +4,6 @@
 //
 //  Created by HAMED HAGHANI on 2025-02-28.
 //
-//
-//  GroceryAppProjectApp.swift
-//  GroceryAppProject
-//
-//  Created by HAMED HAGHANI on 2025-02-28.
-//
 
 import SwiftUI
 
@@ -21,6 +15,7 @@ struct GroceryAppProjectApp: App {
     @StateObject var userSession = UserSession()
     @StateObject var cartManager = CartManager()
     @StateObject var orderManager = OrderManager()
+    @StateObject var favoritesManager = FavoritesManager() 
 
     var body: some Scene {
         WindowGroup {
@@ -31,8 +26,10 @@ struct GroceryAppProjectApp: App {
             .environmentObject(userSession)
             .environmentObject(cartManager)
             .environmentObject(orderManager)
+            .environmentObject(favoritesManager)
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }
+

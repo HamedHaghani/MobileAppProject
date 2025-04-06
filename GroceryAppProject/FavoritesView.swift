@@ -8,39 +8,52 @@
 import SwiftUI
 
 struct FavoritesView: View {
-    let favorites = [
-        ("Apple", "$1.00", "applelogo"),
-        ("Cheese", "$5.00", "cart"),
-        ("Milk", "$3.00", "carton.fill")
-    ]
+    @EnvironmentObject var favoritesManager: FavoritesManager
 
     var body: some View {
-        List {
-            Section(header: Text("Your Favorites").font(.title2).fontWeight(.bold)) {
-                if favorites.isEmpty {
-                    Text("No favorites yet!")
-                        .foregroundColor(.gray)
-                } else {
-                    ForEach(favorites, id: \.0) { item in
+        VStack(alignment: .leading) {
+            Text("Your Favorites")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding()
+
+            if favoritesManager.favorites.isEmpty {
+                Spacer()
+                Text("No favorites yet!")
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                Spacer()
+            } else {
+                List {
+                    ForEach(favoritesManager.favorites, id: \.name) { item in
                         HStack {
-                            Image(systemName: item.2)
+                            Image(systemName: item.imageName)
                                 .resizable()
                                 .frame(width: 30, height: 30)
                                 .padding(.trailing, 10)
 
                             VStack(alignment: .leading) {
-                                Text(item.0)
+                                Text(item.name)
                                     .font(.headline)
-                                Text(item.1)
+                                Text(item.price)
                                     .foregroundColor(.gray)
+                            }
+
+                            Spacer()
+
+                            Button(action: {
+                                favoritesManager.removeFromFavorites(name: item.name)
+                            }) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
                             }
                         }
                         .padding(.vertical, 5)
                     }
                 }
+                .listStyle(PlainListStyle())
             }
         }
         .navigationTitle("Favorites & Wishlist")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
