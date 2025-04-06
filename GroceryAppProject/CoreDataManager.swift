@@ -4,6 +4,8 @@
 //
 //  Created by HAMED HAGHANI on 2025-03-15.
 //
+
+
 import CoreData
 import SwiftUI
 
@@ -28,7 +30,7 @@ class CoreDataManager {
 
         saveContext()
     }
-
+    
     func fetchUser(email: String, password: String) -> User? {
         let request: NSFetchRequest<User> = User.fetchRequest()
         request.predicate = NSPredicate(format: "email == %@ AND password == %@", email, password)
@@ -36,6 +38,7 @@ class CoreDataManager {
         do {
             let users = try context.fetch(request)
             if let user = users.first {
+                // Ensure the fetched user has a valid ID before returning.
                 guard user.id != nil else {
                     print("⚠️ Error: User found but has no valid ID.")
                     return nil
@@ -47,9 +50,9 @@ class CoreDataManager {
         }
         return nil
     }
-
+    
     // MARK: - Category Operations
-
+    
     func addCategory(name: String, imageData: Data?) {
         let newCategory = Category(context: context)
         newCategory.id = UUID()
@@ -71,15 +74,22 @@ class CoreDataManager {
     }
     
     // MARK: - Product Operations
-    
-    func addProduct(name: String, price: Decimal, imageName: String, category: String) {
+    // Updated to store product image and description in Core Data.
+    func addProduct(name: String,
+                    price: Decimal,
+                    category: String,
+                    imageData: Data?,
+                    productDescription: String?) {
         let newProduct = Product(context: context)
         newProduct.id = UUID()
-        newProduct.name = name
+        newProduct.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         newProduct.price = NSDecimalNumber(decimal: price)
-        newProduct.imageName = imageName
         newProduct.category = category
         newProduct.createdAt = Date()
+        
+        // Save the image and description.
+        newProduct.imageData = imageData
+        newProduct.productDescription = productDescription
         
         saveContext()
     }
@@ -95,7 +105,7 @@ class CoreDataManager {
             return []
         }
     }
-
+    
     // MARK: - Cart Operations
     
     func addToCart(user: User, product: Product, quantity: Int) {
@@ -120,7 +130,7 @@ class CoreDataManager {
             return []
         }
     }
-
+    
     func removeCartItem(_ item: CartItem) {
         context.delete(item)
         saveContext()
@@ -138,7 +148,7 @@ class CoreDataManager {
 
         saveContext()
         
-        // Clear user's cart after order
+        // Clear user's cart after order is placed.
         for item in cartItems {
             context.delete(item)
         }
@@ -158,6 +168,7 @@ class CoreDataManager {
     }
     
     // MARK: - Save Context
+    
     func saveContext() {
         if context.hasChanges {
             do {

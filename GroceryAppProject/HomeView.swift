@@ -6,29 +6,28 @@
 //  Updated by Mehmet Ali KABA
 //
 
-
 import SwiftUI
 import CoreData
 
 struct HomeView: View {
     @EnvironmentObject var cartManager: CartManager
     
-    // Dynamic fetching of categories from Core Data.
+    // Dynamic fetching of categories from Core Data
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Category.createdAt, ascending: true)],
         animation: .default)
     private var categories: FetchedResults<Category>
     
-    // New: Dynamic fetching of products (featured products) from Core Data.
+    // Dynamic fetching of all products from Core Data (to show as "featured")
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Product.createdAt, ascending: false)],
         animation: .default)
     private var featuredProducts: FetchedResults<Product>
     
-    // State to present the add category/product view.
+    // State used to present the AddCategoryOrItemView sheet
     @State private var showingAddView = false
     
-    // Two-column grid layout.
+    // Two-column grid for categories
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
     var body: some View {
@@ -36,14 +35,13 @@ struct HomeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     
-                    // Search field.
                     TextField("Search for groceries...", text: .constant(""))
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
                         .padding(.horizontal)
                     
-                    // Categories Section.
+                    // Categories Section
                     Text("Categories")
                         .font(.title2)
                         .fontWeight(.bold)
@@ -61,7 +59,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Featured Products Section.
+                    // Featured Products Section
                     Text("Featured Products")
                         .font(.title2)
                         .fontWeight(.bold)
@@ -76,17 +74,9 @@ struct HomeView: View {
                             HStack(spacing: 10) {
                                 ForEach(featuredProducts, id: \.id) { product in
                                     NavigationLink(
-                                        destination: ProductDetailView(
-                                            name: product.name ?? "",
-                                            price: "$\(product.price?.stringValue ?? "0.00")",
-                                            imageName: product.imageName ?? "photo"
-                                        )
+                                        destination: ProductDetailView(product: product)
                                     ) {
-                                        FeaturedProductCard(
-                                            name: product.name ?? "",
-                                            price: "$\(product.price?.stringValue ?? "0.00")",
-                                            imageName: product.imageName ?? "photo"
-                                        )
+                                        FeaturedProductCard(product: product)
                                     }
                                 }
                             }
@@ -118,6 +108,7 @@ struct HomeView: View {
     }
 }
 
+// Displays a single category
 struct CategoryView: View {
     var category: Category
     
@@ -141,6 +132,7 @@ struct CategoryView: View {
                         .background(Circle().fill(Color.blue.opacity(0.1)))
                         .shadow(radius: 3)
                 }
+                
                 Text(category.name ?? "Unknown")
                     .fontWeight(.medium)
                     .padding(.top, 5)
@@ -155,49 +147,71 @@ struct CategoryView: View {
     }
 }
 
+// Displays a product in the "Featured Products" list
 struct FeaturedProductCard: View {
-    var name: String
-    var price: String
-    var imageName: String
-    
     @EnvironmentObject var cartManager: CartManager
     @State private var quantity: Int = 1
     
+    let product: Product
+    
     var body: some View {
         VStack(spacing: 10) {
-            CustomImage(imageName: imageName)
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
-                .padding(10)
-                .background(Circle().fill(Color.purple.opacity(0.1)))
-                .shadow(radius: 3)
+            // Display the product's image if available
+            if let data = product.imageData,
+               let uiImage = UIImage(data: data) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .padding(10)
+                    .background(Circle().fill(Color.purple.opacity(0.1)))
+                    .shadow(radius: 3)
+            } else {
+                // Fallback if no image
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .padding(10)
+                    .background(Circle().fill(Color.purple.opacity(0.1)))
+                    .shadow(radius: 3)
+            }
             
-            Text(name)
+            Text(product.name ?? "")
                 .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(.black)
                 .padding(.top, 5)
             
-            Text(price)
+            Text("$\(product.price?.stringValue ?? "0.00")")
                 .font(.subheadline)
                 .foregroundColor(.gray)
             
+            // Quantity Stepper
             VStack(spacing: 5) {
                 Text("Qty: \(quantity)")
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                
                 Stepper("", value: $quantity, in: 1...100)
                     .labelsHidden()
             }
             .padding(.top, 5)
             
-            Button(action: {
-                cartManager.addToCart(name: name,
-                                      price: price,
-                                      imageName: imageName,
-                                      quantity: quantity)
-                quantity = 1 // Reset after adding to cart
-            }) {
+            // Add to Cart
+            Button {
+                let name = product.name ?? "Unnamed"
+                let price = "$\(product.price?.stringValue ?? "0")"
+                // For CartManager, we pass a systemName or placeholder
+                // but it won't break if we pass "photo"
+                cartManager.addToCart(
+                    name: name,
+                    price: price,
+                    imageName: "photo", // or any fallback if your cart depends on a string
+                    quantity: quantity
+                )
+                quantity = 1
+            } label: {
                 Text("Add to Cart")
                     .font(.caption)
                     .foregroundColor(.white)
@@ -213,13 +227,5 @@ struct FeaturedProductCard: View {
         .background(Color.white)
         .cornerRadius(10)
         .shadow(radius: 3)
-    }
-}
-
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
-            .environmentObject(CartManager())
     }
 }

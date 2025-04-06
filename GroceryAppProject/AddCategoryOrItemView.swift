@@ -14,21 +14,22 @@ struct AddCategoryOrItemView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) var managedObjectContext
 
-    // Picker to choose between Category and Product
+    // Which type are we adding?
     @State private var selectedType = "Category"
+    let types = ["Category", "Product"]
     
-    // Shared field for both Category and Product
+    // Shared text field for both Category & Product
     @State private var name = ""
     
-    // For Category: Use PhotosPicker to select an image.
+    // For Category image
     @State private var selectedCategoryPhotoItem: PhotosPickerItem?
     @State private var selectedCategoryImageData: Data?
     
-    // For Product: additional fields
+    // For Product
     @State private var price = ""
     @State private var productDescription = ""
     
-    // For Product: use dynamic categories from Core Data.
+    // For Product category selection
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(key: "createdAt", ascending: true)],
         animation: .default)
@@ -36,16 +37,14 @@ struct AddCategoryOrItemView: View {
     
     @State private var selectedCategory: Category?
     
-    // For product image selection using PhotosPicker
+    // For Product image
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var selectedImageData: Data?
-    
-    let types = ["Category", "Product"]
     
     var body: some View {
         NavigationView {
             Form {
-                // Picker to choose between Category and Product
+                // Picker: Are we adding a Category or a Product?
                 Picker("Select type", selection: $selectedType) {
                     ForEach(types, id: \.self) { type in
                         Text(type)
@@ -59,12 +58,11 @@ struct AddCategoryOrItemView: View {
                 }
                 
                 if selectedType == "Category" {
-                    // Category-specific: Select an image using PhotosPicker.
+                    // Category-specific
                     Section(header: Text("Image")) {
                         PhotosPicker(
                             selection: $selectedCategoryPhotoItem,
                             matching: .images,
-                            preferredItemEncoding: .automatic,
                             photoLibrary: PHPhotoLibrary.shared(),
                             label: {
                                 Label("Select an Image", systemImage: "photo.on.rectangle")
@@ -78,6 +76,7 @@ struct AddCategoryOrItemView: View {
                             }
                         }
                         
+                        // Preview
                         if let data = selectedCategoryImageData,
                            let uiImage = UIImage(data: data) {
                             Image(uiImage: uiImage)
@@ -92,7 +91,6 @@ struct AddCategoryOrItemView: View {
                         if fetchedCategories.isEmpty {
                             Text("No categories available. Please add one first.")
                         } else {
-                            // Ensure the selectedCategory is set when the view appears.
                             Picker("Select Category", selection: $selectedCategory) {
                                 ForEach(fetchedCategories, id: \.self) { category in
                                     Text(category.name ?? "")
@@ -101,6 +99,7 @@ struct AddCategoryOrItemView: View {
                             }
                             .pickerStyle(MenuPickerStyle())
                             .onAppear {
+                                // Initialize selection to first category if nil
                                 if selectedCategory == nil {
                                     selectedCategory = fetchedCategories.first
                                 }
@@ -121,7 +120,6 @@ struct AddCategoryOrItemView: View {
                         PhotosPicker(
                             selection: $selectedPhotoItem,
                             matching: .images,
-                            preferredItemEncoding: .automatic,
                             photoLibrary: PHPhotoLibrary.shared(),
                             label: {
                                 Label("Select an Image", systemImage: "photo.on.rectangle")
@@ -135,6 +133,7 @@ struct AddCategoryOrItemView: View {
                             }
                         }
                         
+                        // Preview
                         if let data = selectedImageData,
                            let uiImage = UIImage(data: data) {
                             Image(uiImage: uiImage)
@@ -165,23 +164,29 @@ struct AddCategoryOrItemView: View {
         }
     }
     
+    // MARK: - Handle Save
     private func handleSave() {
         if selectedType == "Category" {
-            // Save the new category using name and selectedCategoryImageData.
+            // Save new category with (optional) image data
             CoreDataManager.shared.addCategory(name: name, imageData: selectedCategoryImageData)
             print("Saving Category: \(name)")
         } else {
+            // Save new product with an image
             guard let selectedCat = selectedCategory else {
-                print("No category selected for product")
+                print("No category selected for the product.")
                 return
             }
-            // Save the new product using name, price, description, selectedCategory, and selectedImageData.
-            let categoryName = selectedCat.name ?? ""
+            let catName = selectedCat.name ?? "Unknown"
             let priceDecimal = Decimal(string: price) ?? 0
-            // Use a valid SF Symbol name ("photo") as a fallback placeholder.
-            let imageNamePlaceholder = "photo"
-            CoreDataManager.shared.addProduct(name: name, price: priceDecimal, imageName: imageNamePlaceholder, category: categoryName)
-            print("Saving Product: \(name), Price: \(price), Description: \(productDescription), Category: \(categoryName)")
+            
+            CoreDataManager.shared.addProduct(
+                name: name,
+                price: priceDecimal,
+                category: catName,
+                imageData: selectedImageData,
+                productDescription: productDescription
+            )
+            print("Saving Product: \(name), Price: \(price), Description: \(productDescription), Category: \(catName)")
         }
     }
 }

@@ -5,17 +5,14 @@
 //  Created by HAMED HAGHANI on 2025-02-28.
 //
 
-
 import SwiftUI
 
 struct ProductListView: View {
     var category: Category
-
-    // Fetch products matching the category name (using the category attribute in Product)
     @State private var products: [Product] = []
-
+    
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
-
+    
     var body: some View {
         ScrollView {
             if products.isEmpty {
@@ -24,20 +21,35 @@ struct ProductListView: View {
             } else {
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(products, id: \.id) { product in
-                        NavigationLink(destination: ProductDetailView(name: product.name ?? "",
-                                                                        price: "$\(product.price?.stringValue ?? "0.00")",
-                                                                        imageName: product.imageName ?? "photo")) {
+                        // Precompute values to ease type-checking.
+                        let productName = product.name ?? "Unnamed"
+                        let priceValue = product.price?.stringValue ?? "0.00"
+                        let productPrice = "$\(priceValue)"
+                        
+                        NavigationLink(destination: ProductDetailView(product: product)) {
                             VStack {
-                                CustomImage(imageName: product.imageName ?? "photo")
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50, height: 50)
-                                    .padding()
-                                    .background(Circle().fill(Color.blue.opacity(0.2)))
-                                    .shadow(radius: 3)
+                                if let imageData = product.imageData,
+                                   let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 50, height: 50)
+                                        .padding()
+                                        .background(Circle().fill(Color.blue.opacity(0.2)))
+                                        .shadow(radius: 3)
+                                } else {
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 50, height: 50)
+                                        .padding()
+                                        .background(Circle().fill(Color.blue.opacity(0.2)))
+                                        .shadow(radius: 3)
+                                }
                                 
-                                Text(product.name ?? "")
+                                Text(productName)
                                     .fontWeight(.medium)
-                                Text("$\(product.price?.stringValue ?? "0.00")")
+                                Text(productPrice)
                                     .foregroundColor(.gray)
                             }
                             .padding()
@@ -59,7 +71,6 @@ struct ProductListView: View {
     }
     
     private func loadProducts() {
-        // Use the category name from the selected category to fetch products.
         products = CoreDataManager.shared.fetchProducts(category: category.name ?? "")
     }
 }
