@@ -4,7 +4,6 @@
 //
 //  Created by HAMED HAGHANI on 2025-03-15.
 //
-
 import CoreData
 import SwiftUI
 
@@ -30,7 +29,6 @@ class CoreDataManager {
         saveContext()
     }
 
-    
     func fetchUser(email: String, password: String) -> User? {
         let request: NSFetchRequest<User> = User.fetchRequest()
         request.predicate = NSPredicate(format: "email == %@ AND password == %@", email, password)
@@ -38,7 +36,6 @@ class CoreDataManager {
         do {
             let users = try context.fetch(request)
             if let user = users.first {
-                // ✅ Ensure the fetched user has a valid ID before returning
                 guard user.id != nil else {
                     print("⚠️ Error: User found but has no valid ID.")
                     return nil
@@ -51,7 +48,28 @@ class CoreDataManager {
         return nil
     }
 
+    // MARK: - Category Operations
 
+    func addCategory(name: String, imageData: Data?) {
+        let newCategory = Category(context: context)
+        newCategory.id = UUID()
+        newCategory.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        newCategory.imageData = imageData
+        newCategory.createdAt = Date()
+        
+        saveContext()
+    }
+    
+    func fetchCategories() -> [Category] {
+        let request: NSFetchRequest<Category> = Category.fetchRequest()
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Error fetching categories: \(error)")
+            return []
+        }
+    }
+    
     // MARK: - Product Operations
     
     func addProduct(name: String, price: Decimal, imageName: String, category: String) {
@@ -116,7 +134,7 @@ class CoreDataManager {
         newOrder.user = user
         newOrder.totalAmount = NSDecimalNumber(decimal: totalAmount)
         newOrder.orderDate = Date()
-        newOrder.items = cartItems as NSObject // Transformable attribute
+        newOrder.items = cartItems as NSObject
 
         saveContext()
         
@@ -140,7 +158,7 @@ class CoreDataManager {
     }
     
     // MARK: - Save Context
-     func saveContext() {
+    func saveContext() {
         if context.hasChanges {
             do {
                 try context.save()
@@ -150,4 +168,3 @@ class CoreDataManager {
         }
     }
 }
-

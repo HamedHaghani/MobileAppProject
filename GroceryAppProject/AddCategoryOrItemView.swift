@@ -6,18 +6,21 @@
 //
 
 import SwiftUI
-import PhotosUI  // For PhotosPicker (iOS 16+)
-import Photos   // For PHPhotoLibrary
+import PhotosUI
+import Photos
+import CoreData
 
 struct AddCategoryOrItemView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.managedObjectContext) var managedObjectContext
 
+    // Picker to choose between Category and Product
     @State private var selectedType = "Category"
     
     // Shared field for both Category and Product
     @State private var name = ""
     
-    // For Category: Instead of a text field, we'll use a PhotosPicker to select an image.
+    // For Category: Use PhotosPicker to select an image.
     @State private var selectedCategoryPhotoItem: PhotosPickerItem?
     @State private var selectedCategoryImageData: Data?
     
@@ -25,9 +28,13 @@ struct AddCategoryOrItemView: View {
     @State private var price = ""
     @State private var productDescription = ""
     
-    // New: For selecting an existing category for the product
-    @State private var selectedCategory: String = "Fruits"
-    let existingCategories = ["Fruits", "Vegetables", "Dairy", "Bakery", "Meat", "Frozen", "Beverages", "Snacks"]
+    // For Product: use dynamic categories from Core Data.
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(key: "createdAt", ascending: true)],
+        animation: .default)
+    private var fetchedCategories: FetchedResults<Category>
+    
+    @State private var selectedCategory: Category?
     
     // For product image selection using PhotosPicker
     @State private var selectedPhotoItem: PhotosPickerItem?
@@ -47,13 +54,13 @@ struct AddCategoryOrItemView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 
                 // Shared field: Name
-                Section(header: Text("Name"), content: {
+                Section(header: Text("Name")) {
                     TextField("Enter name", text: $name)
-                })
+                }
                 
                 if selectedType == "Category" {
                     // Category-specific: Select an image using PhotosPicker.
-                    Section(header: Text("Image"), content: {
+                    Section(header: Text("Image")) {
                         PhotosPicker(
                             selection: $selectedCategoryPhotoItem,
                             matching: .images,
@@ -71,35 +78,46 @@ struct AddCategoryOrItemView: View {
                             }
                         }
                         
-                        if let selectedCategoryImageData,
-                           let uiImage = UIImage(data: selectedCategoryImageData) {
+                        if let data = selectedCategoryImageData,
+                           let uiImage = UIImage(data: data) {
                             Image(uiImage: uiImage)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 200)
                         }
-                    })
+                    }
                 } else {
                     // Product-specific fields
-                    Section(header: Text("Category"), content: {
-                        Picker("Select Category", selection: $selectedCategory) {
-                            ForEach(existingCategories, id: \.self) { category in
-                                Text(category)
+                    Section(header: Text("Category")) {
+                        if fetchedCategories.isEmpty {
+                            Text("No categories available. Please add one first.")
+                        } else {
+                            // Ensure the selectedCategory is set when the view appears.
+                            Picker("Select Category", selection: $selectedCategory) {
+                                ForEach(fetchedCategories, id: \.self) { category in
+                                    Text(category.name ?? "")
+                                        .tag(category as Category?)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                            .onAppear {
+                                if selectedCategory == nil {
+                                    selectedCategory = fetchedCategories.first
+                                }
                             }
                         }
-                        .pickerStyle(MenuPickerStyle())
-                    })
+                    }
                     
-                    Section(header: Text("Price"), content: {
+                    Section(header: Text("Price")) {
                         TextField("Enter price", text: $price)
                             .keyboardType(.decimalPad)
-                    })
+                    }
                     
-                    Section(header: Text("Description"), content: {
+                    Section(header: Text("Description")) {
                         TextField("Enter description", text: $productDescription)
-                    })
+                    }
                     
-                    Section(header: Text("Image"), content: {
+                    Section(header: Text("Image")) {
                         PhotosPicker(
                             selection: $selectedPhotoItem,
                             matching: .images,
@@ -117,14 +135,14 @@ struct AddCategoryOrItemView: View {
                             }
                         }
                         
-                        if let selectedImageData,
-                           let uiImage = UIImage(data: selectedImageData) {
+                        if let data = selectedImageData,
+                           let uiImage = UIImage(data: data) {
                             Image(uiImage: uiImage)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 200)
                         }
-                    })
+                    }
                 }
             }
             .navigationTitle("Add \(selectedType)")
@@ -150,10 +168,20 @@ struct AddCategoryOrItemView: View {
     private func handleSave() {
         if selectedType == "Category" {
             // Save the new category using name and selectedCategoryImageData.
-            print("Saving Category: \(name), Image Data: \(selectedCategoryImageData != nil)")
+            CoreDataManager.shared.addCategory(name: name, imageData: selectedCategoryImageData)
+            print("Saving Category: \(name)")
         } else {
+            guard let selectedCat = selectedCategory else {
+                print("No category selected for product")
+                return
+            }
             // Save the new product using name, price, description, selectedCategory, and selectedImageData.
-            print("Saving Product: \(name), Price: \(price), Description: \(productDescription), Category: \(selectedCategory), Image Data: \(selectedImageData != nil)")
+            let categoryName = selectedCat.name ?? ""
+            let priceDecimal = Decimal(string: price) ?? 0
+            // Use a valid SF Symbol name ("photo") as a fallback placeholder.
+            let imageNamePlaceholder = "photo"
+            CoreDataManager.shared.addProduct(name: name, price: priceDecimal, imageName: imageNamePlaceholder, category: categoryName)
+            print("Saving Product: \(name), Price: \(price), Description: \(productDescription), Category: \(categoryName)")
         }
     }
 }
@@ -161,5 +189,6 @@ struct AddCategoryOrItemView: View {
 struct AddCategoryOrItemView_Previews: PreviewProvider {
     static var previews: some View {
         AddCategoryOrItemView()
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
     }
 }

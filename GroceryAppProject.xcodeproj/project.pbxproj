@@ -31,6 +31,8 @@
 		0C330D592D72172B003FCDCD /* GroceryAppProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroceryAppProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C330D692D72172E003FCDCD /* GroceryAppProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroceryAppProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C330D732D72172E003FCDCD /* GroceryAppProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GroceryAppProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6144CCF42DA2098C00A3FE6F /* Category+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Category+CoreDataClass.swift"; sourceTree = "<group>"; };
+		6144CCF52DA2098C00A3FE6F /* Category+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Category+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		61456F732D87BE86006EF657 /* GroceryAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = GroceryAppModel.xcdatamodel; sourceTree = "<group>"; };
 		61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataClass.swift"; sourceTree = "<group>"; };
 		61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -116,6 +118,8 @@
 		0C330D502D72172B003FCDCD = {
 			isa = PBXGroup;
 			children = (
+				6144CCF42DA2098C00A3FE6F /* Category+CoreDataClass.swift */,
+				6144CCF52DA2098C00A3FE6F /* Category+CoreDataProperties.swift */,
 				61456F752D87BE93006EF657 /* CartItem+CoreDataClass.swift */,
 				61456F762D87BE93006EF657 /* CartItem+CoreDataProperties.swift */,
 				61456F782D87BE93006EF657 /* OrderHistory+CoreDataProperties.swift */,
