@@ -5,7 +5,6 @@
 //  Created by HAMED HAGHANI on 2025-02-28.
 //
 // Updated by Mehmet Ali KABA
-
 import SwiftUI
 
 struct CartView: View {
@@ -28,11 +27,20 @@ struct CartView: View {
                     List {
                         ForEach(cartManager.cartItems.indices, id: \.self) { index in
                             HStack(spacing: 15) {
-                                // Use CustomImage to display product image.
-                                CustomImage(imageName: cartManager.cartItems[index].imageName)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
-
+                                // Display image from imageData if available; otherwise, use fallback image.
+                                if let data = cartManager.cartItems[index].imageData,
+                                   let uiImage = UIImage(data: data) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 40, height: 40)
+                                } else {
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 40, height: 40)
+                                }
+                                
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(cartManager.cartItems[index].name)
                                         .font(.headline)
@@ -43,9 +51,9 @@ struct CartView: View {
                                         .foregroundColor(.gray)
                                         .font(.subheadline)
                                 }
-
+                                
                                 Spacer()
-
+                                
                                 Button(action: {
                                     cartManager.removeFromCart(index: index)
                                 }) {
@@ -77,5 +85,12 @@ struct CartView: View {
             .navigationTitle("Your Cart")
             .navigationBarTitleDisplayMode(.inline)
         }
+    }
+}
+
+struct CartView_Previews: PreviewProvider {
+    static var previews: some View {
+        CartView()
+            .environmentObject(CartManager())
     }
 }

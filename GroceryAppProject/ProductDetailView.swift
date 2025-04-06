@@ -14,8 +14,10 @@ struct ProductDetailView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @Environment(\.presentationMode) var presentationMode
     @State private var quantity: Int = 1
-    
-    let product: Product
+    @State private var showingEditView: Bool = false
+
+    // Observe the product so that any edits update the view.
+    @ObservedObject var product: Product
 
     var body: some View {
         VStack(spacing: 20) {
@@ -64,10 +66,18 @@ struct ProductDetailView: View {
             
             // Add to Cart Button
             Button(action: {
-                let name = product.name ?? "Unnamed"
-                let price = "$\(product.price?.stringValue ?? "0.00")"
-                cartManager.addToCart(name: name, price: price, imageName: "photo", quantity: quantity)
-                quantity = 1
+                // Wrap the cart update in an async block to help avoid navigation pop issues.
+                DispatchQueue.main.async {
+                    let name = product.name ?? "Unnamed"
+                    let price = "$\(product.price?.stringValue ?? "0.00")"
+                    cartManager.addToCart(
+                        name: name,
+                        price: price,
+                        imageData: product.imageData, // Pass image data
+                        quantity: quantity
+                    )
+                    quantity = 1
+                }
             }) {
                 Text("Add to Cart")
                     .font(.headline)
@@ -75,6 +85,20 @@ struct ProductDetailView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.green)
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+            }
+            
+            // Edit Product Button
+            Button(action: {
+                showingEditView = true
+            }) {
+                Text("Edit Product")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
                     .cornerRadius(10)
                     .padding(.horizontal)
             }
@@ -96,6 +120,10 @@ struct ProductDetailView: View {
         .padding()
         .navigationTitle(product.name ?? "Product")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingEditView) {
+            EditProductView(product: product)
+                .environment(\.managedObjectContext, managedObjectContext)
+        }
     }
     
     private func deleteProduct() {
@@ -111,12 +139,12 @@ struct ProductDetailView: View {
 
 struct ProductDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        // Create a dummy product for preview.
         let context = PersistenceController.shared.container.viewContext
         let dummyProduct = Product(context: context)
         dummyProduct.name = "Sample Product"
         dummyProduct.price = NSDecimalNumber(string: "9.99")
         dummyProduct.productDescription = "This is a sample product."
+        dummyProduct.category = "Fruits"
         return NavigationView {
             ProductDetailView(product: dummyProduct)
                 .environment(\.managedObjectContext, context)

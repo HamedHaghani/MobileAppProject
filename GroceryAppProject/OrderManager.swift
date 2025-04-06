@@ -7,10 +7,10 @@
 import SwiftUI
 
 class OrderManager: ObservableObject {
-   
-    @Published var orders: [[(name: String, price: String, imageName: String, quantity: Int)]] = []
-
-    func placeOrder(cartItems: [(name: String, price: String, imageName: String, quantity: Int)]) {
+    // Updated orders to store cart items using imageData instead of imageName.
+    @Published var orders: [[(name: String, price: String, imageData: Data?, quantity: Int)]] = []
+    
+    func placeOrder(cartItems: [(name: String, price: String, imageData: Data?, quantity: Int)]) {
         if !cartItems.isEmpty {
             orders.append(cartItems)
         }

@@ -10,15 +10,15 @@ import SwiftUI
 struct CheckoutView: View {
     @EnvironmentObject var cartManager: CartManager
     @EnvironmentObject var orderManager: OrderManager
+    @Environment(\.presentationMode) var presentationMode
 
+    // Compute the total price from the cart items.
     var totalPrice: Double {
         cartManager.cartItems.reduce(0) { sum, item in
             let unitPrice = Double(item.price.replacingOccurrences(of: "$", with: "")) ?? 0
             return sum + (unitPrice * Double(item.quantity))
         }
     }
-
-    @State private var orderPlaced = false
 
     var body: some View {
         VStack {
@@ -34,23 +34,36 @@ struct CheckoutView: View {
                 List {
                     ForEach(cartManager.cartItems.indices, id: \.self) { index in
                         HStack {
-                            CustomImage(imageName: cartManager.cartItems[index].imageName)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40)
-
+                            // Display product image from imageData if available.
+                            if let data = cartManager.cartItems[index].imageData,
+                               let uiImage = UIImage(data: data) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40)
+                            } else {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40)
+                            }
+                            
                             VStack(alignment: .leading) {
                                 Text(cartManager.cartItems[index].name)
                                     .font(.headline)
                                 Text(cartManager.cartItems[index].price)
                                     .foregroundColor(.gray)
+                                    .font(.subheadline)
                                 Text("Qty: \(cartManager.cartItems[index].quantity)")
                                     .foregroundColor(.gray)
+                                    .font(.subheadline)
                             }
-
                             Spacer()
                         }
+                        .padding(.vertical, 8)
                     }
                 }
+                .listStyle(PlainListStyle())
 
                 Text("Total: $\(String(format: "%.2f", totalPrice))")
                     .font(.title2)
@@ -60,10 +73,11 @@ struct CheckoutView: View {
 
             Spacer()
 
+            // When Place Order is tapped, the order is saved and the checkout view is dismissed.
             Button(action: {
                 orderManager.placeOrder(cartItems: cartManager.cartItems)
-                orderPlaced = true
                 cartManager.cartItems.removeAll()
+                presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Place Order")
                     .font(.headline)
@@ -75,15 +89,15 @@ struct CheckoutView: View {
                     .padding(.horizontal)
             }
             .disabled(cartManager.cartItems.isEmpty)
-
-            if orderPlaced {
-                Text("Order placed successfully!")
-                    .foregroundColor(.green)
-                    .padding()
-                    .transition(.opacity)
-            }
         }
         .padding()
-        .animation(.easeInOut, value: orderPlaced)
+    }
+}
+
+struct CheckoutView_Previews: PreviewProvider {
+    static var previews: some View {
+        CheckoutView()
+            .environmentObject(CartManager())
+            .environmentObject(OrderManager())
     }
 }

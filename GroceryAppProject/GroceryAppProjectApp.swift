@@ -17,16 +17,20 @@ import SwiftUI
 struct GroceryAppProjectApp: App {
     let persistenceController = PersistenceController.shared
 
-    // Instantiate UserSession as a StateObject so it lives for the entire app session
+    // Instantiate the needed environment objects.
     @StateObject var userSession = UserSession()
+    @StateObject var cartManager = CartManager()
+    @StateObject var orderManager = OrderManager()
 
     var body: some Scene {
         WindowGroup {
             NavigationView {
                 AuthView()
             }
-            // Inject the userSession into the environment
+            // Inject environment objects for use in all views.
             .environmentObject(userSession)
+            .environmentObject(cartManager)
+            .environmentObject(orderManager)
             .environment(\.managedObjectContext, persistenceController.container.viewContext)
             .navigationViewStyle(StackNavigationViewStyle())
         }
